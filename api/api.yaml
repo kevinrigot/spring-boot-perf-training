@@ -1,0 +1,248 @@
+openapi: 3.0.3
+info:
+  title: 'Company Directory API'
+  description: |
+    Read-only directory API to search companies, departments, and employees.
+    This spec is the single source of truth for generated interfaces and models.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local server
+tags:
+  - name: Companies
+    description: Endpoints to search companies
+  - name: Departments
+    description: Endpoints to search departments
+  - name: Employees
+    description: Endpoints to search employees
+paths:
+  /companies:
+    get:
+      tags: [Companies]
+      operationId: searchCompanies
+      summary: Search companies
+      description: Search companies by optional filters and pagination
+      parameters:
+        - in: query
+          name: id
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: Filter by exact company id
+        - in: query
+          name: name
+          required: false
+          schema:
+            type: string
+          description: Filter by company name (contains, case-insensitive)
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Companies page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageCompanyResponse'
+  /departments:
+    get:
+      tags: [Departments]
+      operationId: searchDepartments
+      summary: Search departments
+      description: Search departments by optional filters and pagination
+      parameters:
+        - in: query
+          name: id
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: Filter by exact department id
+        - in: query
+          name: name
+          required: false
+          schema:
+            type: string
+          description: Filter by department name (contains, case-insensitive)
+        - in: query
+          name: companyId
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: Filter by owning company id
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Departments page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDepartmentResponse'
+  /employees:
+    get:
+      tags: [Employees]
+      operationId: searchEmployees
+      summary: Search employees
+      description: Search employees by optional filters and pagination
+      parameters:
+        - in: query
+          name: id
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: Filter by exact employee id
+        - in: query
+          name: firstName
+          required: false
+          schema:
+            type: string
+          description: Filter by first name (contains, case-insensitive)
+        - in: query
+          name: lastName
+          required: false
+          schema:
+            type: string
+          description: Filter by last name (contains, case-insensitive)
+        - in: query
+          name: departmentId
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: Filter by department id
+        - in: query
+          name: companyId
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: Filter by company id (via department->company)
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Employees page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageEmployeeResponse'
+components:
+  parameters:
+    page:
+      in: query
+      name: page
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Zero-based page index
+    size:
+      in: query
+      name: size
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 20
+      description: Page size
+  schemas:
+    Company:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+    Department:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        chief:
+          $ref: '#/components/schemas/EmployeeLight'
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeLight'
+    EmployeeLight:
+      type: object
+      required: [id, firstName, lastName]
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userId:
+          type: string
+          maxLength: 20
+    Employee:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EmployeeLight'
+      properties:
+        email:
+          type: string
+        phone:
+          type: string
+    PageMeta:
+      type: object
+      required: [page, size, totalElements, totalPages]
+      properties:
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+    PageCompanyResponse:
+      type: object
+      required: [items, page]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Company'
+        page:
+          $ref: '#/components/schemas/PageMeta'
+    PageDepartmentResponse:
+      type: object
+      required: [items, page]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        page:
+          $ref: '#/components/schemas/PageMeta'
+    PageEmployeeResponse:
+      type: object
+      required: [items, page]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+        page:
+          $ref: '#/components/schemas/PageMeta'

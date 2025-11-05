@@ -1,0 +1,5 @@
+### Search companies
+GET http://localhost:8080/companies?name=a&size=200
+
+### Search employees
+GET http://localhost:8080/employees
