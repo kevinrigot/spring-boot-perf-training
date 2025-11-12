@@ -8,4 +8,7 @@ public interface CompanyMapper {
 
     be.fgov.onerva.training.springbootperf.model.Company toApi(
             be.fgov.onerva.training.springbootperf.domain.company.Company entity);
+
+    be.fgov.onerva.training.springbootperf.model.CompanyDetails toApiDetails(
+            be.fgov.onerva.training.springbootperf.domain.company.Company entity);
 }

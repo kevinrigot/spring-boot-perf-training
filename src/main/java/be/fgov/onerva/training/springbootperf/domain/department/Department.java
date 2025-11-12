@@ -3,6 +3,7 @@ package be.fgov.onerva.training.springbootperf.domain.department;
 import be.fgov.onerva.training.springbootperf.domain.company.Company;
 import be.fgov.onerva.training.springbootperf.domain.employee.Employee;
 import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 

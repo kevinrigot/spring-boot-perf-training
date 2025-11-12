@@ -14,7 +14,7 @@ public class CompanyService {
     public CompanyService(CompanyRepository repo) { this.repo = repo; }
 
     public Page<Company> search(Long id, String name, int page, int size) {
-        Specification<Company> spec = Specification.where(null);
+        Specification<Company> spec = Specification.allOf();
         if (id != null) {
             spec = spec.and((root, q, cb) -> cb.equal(root.get("id"), id));
         }

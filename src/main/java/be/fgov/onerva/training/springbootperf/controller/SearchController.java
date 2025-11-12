@@ -4,20 +4,15 @@ import be.fgov.onerva.training.springbootperf.api.CompaniesApi;
 import be.fgov.onerva.training.springbootperf.api.DepartmentsApi;
 import be.fgov.onerva.training.springbootperf.api.EmployeesApi;
 import be.fgov.onerva.training.springbootperf.domain.company.Company;
-import be.fgov.onerva.training.springbootperf.domain.department.Department;
 import be.fgov.onerva.training.springbootperf.domain.employee.Employee;
 import be.fgov.onerva.training.springbootperf.mapper.CompanyMapper;
-import be.fgov.onerva.training.springbootperf.mapper.DepartmentMapper;
-import be.fgov.onerva.training.springbootperf.mapper.EmployeeMapper;
+import be.fgov.onerva.training.springbootperf.model.PageCompanyDetailsResponse;
 import be.fgov.onerva.training.springbootperf.model.PageCompanyResponse;
-import be.fgov.onerva.training.springbootperf.model.PageDepartmentResponse;
 import be.fgov.onerva.training.springbootperf.model.PageEmployeeResponse;
 import be.fgov.onerva.training.springbootperf.model.PageMeta;
 import be.fgov.onerva.training.springbootperf.service.CompanyService;
-import be.fgov.onerva.training.springbootperf.service.DepartmentService;
 import be.fgov.onerva.training.springbootperf.service.EmployeeService;
 import be.fgov.onerva.training.springbootperf.service.ExternalEmployeeService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,11 +28,8 @@ import java.util.Optional;
 public class SearchController implements CompaniesApi, DepartmentsApi, EmployeesApi {
 
     private final CompanyService companyService;
-    private final DepartmentService departmentService;
     private final EmployeeService employeeService;
     private final CompanyMapper companyMapper;
-    private final DepartmentMapper departmentMapper;
-    private final EmployeeMapper employeeMapper;
     private final ExternalEmployeeService externalEmployeeService;
 
     @Override
@@ -55,20 +47,21 @@ public class SearchController implements CompaniesApi, DepartmentsApi, Employees
     }
 
     @Override
-    public ResponseEntity<PageDepartmentResponse> searchDepartments(Long id, String name, Long companyId, Integer page, Integer size) {
-        Page<Department> p = departmentService.search(id, name, companyId, nvl(page), nvlSize(size));
-        PageDepartmentResponse resp = new PageDepartmentResponse()
-                .items(p.get().map(departmentMapper::toApi).toList())
+    public ResponseEntity<PageCompanyDetailsResponse> searchCompaniesDetails(Long id, String name, Integer page, Integer size) {
+        Page<Company> p = companyService.search(id, name, nvl(page), nvlSize(size));
+        PageCompanyDetailsResponse resp = new PageCompanyDetailsResponse()
+                .items(p.get().map(companyMapper::toApiDetails).toList())
                 .page(toMeta(p));
         return ResponseEntity.ok(resp);
     }
+
 
     @Override
     public ResponseEntity<PageEmployeeResponse> searchEmployees(Long id, String firstName, String lastName, Long departmentId, Long companyId, Integer page, Integer size) {
         Page<Employee> p = employeeService.search(id, firstName, lastName, departmentId, companyId, nvl(page), nvlSize(size));
         PageEmployeeResponse resp = new PageEmployeeResponse()
                 .items(p.get()
-                        .map(externalEmployeeService::getEmployeeByUserId)
+                        .map(e -> externalEmployeeService.getEmployeeByUserId(e.getUserId()))
                 .toList())
                 .page(toMeta(p));
 

@@ -1,5 +1,8 @@
-### Search companies
+### Search companies - N+1 test case
 GET http://localhost:8080/companies?name=a&size=200
 
-### Search employees
-GET http://localhost:8080/employees
+### Search companies with full list of employees - Open In View test case
+GET http://localhost:8080/companies-details?name=a&size=10
+
+### Search employees - Caching
+GET http://localhost:8080/employees?size=10
