@@ -4,8 +4,8 @@ import be.fgov.onerva.training.springbootperf.domain.company.Company;
 import be.fgov.onerva.training.springbootperf.domain.employee.Employee;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "departments")
@@ -26,7 +26,7 @@ public class Department {
     private Employee chief;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = false)
-    private List<Employee> employees = new ArrayList<>();
+    private Set<Employee> employees = new HashSet<>();
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -36,6 +36,12 @@ public class Department {
     public void setCompany(Company company) { this.company = company; }
     public Employee getChief() { return chief; }
     public void setChief(Employee chief) { this.chief = chief; }
-    public List<Employee> getEmployees() { return employees; }
-    public void setEmployees(List<Employee> employees) { this.employees = employees; }
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
+    }
 }

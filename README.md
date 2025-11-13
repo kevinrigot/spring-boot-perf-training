@@ -62,7 +62,10 @@ The exercices should be done sequentially.
 1. Disable Open session in view `spring.jpa.open-in-view: false` in `application.yaml`
 2. in api/request , run "Search companies with full list of employees - Open In View test case"
 3. You should get a 500.
-4. Fix it. Don't deal with the n+1 query problem for now
+4. Fix it. 
 
 ### BatchSize
+Instead of fetching all employees of all department of all companies, wich would result in a cartesian of c*d*e.
+Optimize it with batchsize.
+Request is "Search companies with full list of employees - Open In View test case"
 
