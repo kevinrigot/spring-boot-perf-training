@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Spring boot" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="springbootperf" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="be.fgov.onerva.training.springbootperf.SpringbootperfApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
