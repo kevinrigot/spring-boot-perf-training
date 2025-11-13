@@ -69,3 +69,12 @@ Instead of fetching all employees of all department of all companies, wich would
 Optimize it with batchsize.
 Request is "Search companies with full list of employees - Open In View test case"
 
+### Cacheable
+1. Run "Search employees - Caching"
+2. It is slow...
+3. Use `@Caching` and `ExternalEmployeeService.getAllEmployees`
+
+### Fix the warning
+1. First Search ids with pagination and no joins
+2. Then fetch with all the entities by ids
+3. Merge both response into a PageImpl
