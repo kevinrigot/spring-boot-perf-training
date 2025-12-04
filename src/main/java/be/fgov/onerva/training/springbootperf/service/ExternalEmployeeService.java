@@ -4,6 +4,7 @@ import be.fgov.onerva.training.springbootperf.model.Employee;
 import be.fgov.onerva.training.springbootperf.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -21,12 +22,8 @@ public class ExternalEmployeeService {
     public Employee getEmployeeByUserId(String userId){
         log.info("getEmployeeByUserId from external service for {}", userId);
         //Call an External employee service to retrieve the email and a lot of usefull stuff
-        Employee employee = new Employee();
         be.fgov.onerva.training.springbootperf.domain.employee.Employee externalEmployee = fakeExternalService.findOneByUserId(userId).orElseThrow(() -> new HttpClientErrorException(HttpStatusCode.valueOf(404)));
-        employee.setUserId(externalEmployee.getUserId());
-        employee.setFirstName(externalEmployee.getFirstName());
-        employee.setLastName(externalEmployee.getLastName());
-        employee.setEmail(externalEmployee.getFirstName()+"."+externalEmployee.getLastName()+"@onem.be");
+        Employee employee = getEmployee(externalEmployee);
 
         try {
             Thread.sleep(500);
@@ -38,7 +35,10 @@ public class ExternalEmployeeService {
         return employee;
     }
 
-    public List<be.fgov.onerva.training.springbootperf.domain.employee.Employee> getAllEmployees(){
+
+
+    @Cacheable(value = "allEmployees", unless = "T(org.springframework.util.ObjectUtils).isEmpty(#result)")
+    public List<Employee> getAllEmployees(){
         log.info("Fetch all employees from external service");
 
         List<be.fgov.onerva.training.springbootperf.domain.employee.Employee> all = fakeExternalService.findAll();
@@ -50,7 +50,16 @@ public class ExternalEmployeeService {
             Thread.currentThread().interrupt();
         }
 
-        return all;
+        return all.stream().map(ExternalEmployeeService::getEmployee).toList();
+    }
+
+    private static Employee getEmployee(be.fgov.onerva.training.springbootperf.domain.employee.Employee externalEmployee) {
+        Employee employee = new Employee();
+        employee.setUserId(externalEmployee.getUserId());
+        employee.setFirstName(externalEmployee.getFirstName());
+        employee.setLastName(externalEmployee.getLastName());
+        employee.setEmail(externalEmployee.getFirstName()+"."+ externalEmployee.getLastName()+"@onem.be");
+        return employee;
     }
 
 }
