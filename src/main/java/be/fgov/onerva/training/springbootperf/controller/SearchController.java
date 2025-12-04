@@ -1,7 +1,6 @@
 package be.fgov.onerva.training.springbootperf.controller;
 
 import be.fgov.onerva.training.springbootperf.api.CompaniesApi;
-import be.fgov.onerva.training.springbootperf.api.DepartmentsApi;
 import be.fgov.onerva.training.springbootperf.api.EmployeesApi;
 import be.fgov.onerva.training.springbootperf.domain.company.Company;
 import be.fgov.onerva.training.springbootperf.domain.employee.Employee;
@@ -25,7 +24,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class SearchController implements CompaniesApi, DepartmentsApi, EmployeesApi {
+public class SearchController implements CompaniesApi, EmployeesApi {
 
     private final CompanyService companyService;
     private final EmployeeService employeeService;
