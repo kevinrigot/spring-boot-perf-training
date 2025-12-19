@@ -172,6 +172,27 @@ color: red
 </div>
 </div>
 
+---
+layout: top-title
+color: red
+---
+
+:: title ::
+# Entity Lifecycle in Spring Hibernate
+
+:: content ::
+1. Managed Entity
+- Associated with persistence context and database. Entity is tracked by Hibernate Session
+- Any changes are automatically synchronized to database
+
+2. Detached Entity
+- Previously managed entity, now disconnected from persistence context, Hibernate Session is closed
+- Changes are NOT automatically synchronized
+
+3. Transient Entity
+- Not associated with any persistence context
+- Entity object created using new keyword
+- No database representation, Has no identifier assigned. Not tracked by Hibernate Session
 
 ---
 layout: top-title
