@@ -33,3 +33,4 @@ build/
 .vscode/
 /companydb.mv.db
 /companydb.trace.db
+/joularjx-result/

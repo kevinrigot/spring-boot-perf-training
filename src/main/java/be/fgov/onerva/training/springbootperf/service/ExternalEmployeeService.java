@@ -26,7 +26,7 @@ public class ExternalEmployeeService {
         Employee employee = getEmployee(externalEmployee);
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             log.error("Error while simulating external service delay", e);
             Thread.currentThread().interrupt();
