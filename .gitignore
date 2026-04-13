@@ -34,3 +34,4 @@ build/
 /companydb.mv.db
 /companydb.trace.db
 /joularjx-result/
+/frontend/.features-gen/
