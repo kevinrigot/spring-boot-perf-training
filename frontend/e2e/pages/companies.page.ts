@@ -1,5 +1,8 @@
 import { Page, Locator, expect } from '@playwright/test';
 
+const isCompaniesApiResponse = (url: string) =>
+  url.includes('localhost:8080/companies') && !url.includes('/companies/');
+
 export class CompaniesPage {
   readonly page: Page;
   readonly nameInput: Locator;
@@ -26,18 +29,24 @@ export class CompaniesPage {
   }
 
   async navigate() {
-    await this.page.goto('/companies');
-    await this.waitForData();
-  }
-
-  async waitForData() {
-    await expect(this.page.locator('.status-bar.loading')).toHaveCount(0, { timeout: 10000 });
+    await Promise.all([
+      this.page.waitForResponse(
+        resp => isCompaniesApiResponse(resp.url()) && resp.status() === 200,
+        { timeout: 30000 },
+      ),
+      this.page.goto('/companies'),
+    ]);
   }
 
   async filterByName(name: string) {
     await this.nameInput.fill(name);
-    await this.searchButton.click();
-    await this.waitForData();
+    await Promise.all([
+      this.page.waitForResponse(
+        resp => isCompaniesApiResponse(resp.url()) && resp.status() === 200,
+        { timeout: 30000 },
+      ),
+      this.searchButton.click(),
+    ]);
   }
 
   async getFirstCompanyLink(): Promise<Locator> {

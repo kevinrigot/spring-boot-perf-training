@@ -52,8 +52,5 @@ When('I filter companies by name {string}', async ({ page }, name: string) => {
 
 Then('the departments section should be visible', async ({ page }) => {
   const detailPage = new CompanyDetailPage(page);
-  // Either the grid is shown, or the "no departments" message is shown
-  const gridVisible = await detailPage.departmentsGrid.isVisible();
-  const emptyVisible = await detailPage.emptyDepartments.isVisible();
-  expect(gridVisible || emptyVisible).toBe(true);
+  await expect(detailPage.departmentsGrid.or(detailPage.emptyDepartments)).toBeVisible();
 });

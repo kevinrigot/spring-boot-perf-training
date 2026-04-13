@@ -124,7 +124,6 @@ interface SearchParams {
           <table class="employees-table">
             <thead>
               <tr>
-                <th class="col-id">ID</th>
                 <th>Name</th>
                 <th>User ID</th>
                 <th>Email</th>
@@ -132,9 +131,8 @@ interface SearchParams {
               </tr>
             </thead>
             <tbody>
-              @for (emp of result.items; track emp.id) {
+              @for (emp of result.items; track emp.userId) {
                 <tr>
-                  <td class="col-id">{{ emp.id }}</td>
                   <td class="col-name">
                     {{ emp.firstName }} {{ emp.lastName }}
                   </td>

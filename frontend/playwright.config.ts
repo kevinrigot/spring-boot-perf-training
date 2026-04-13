@@ -6,7 +6,7 @@ const testDir = defineBddConfig({
   steps: 'e2e/steps/**/*.ts',
 });
 
-const repeat = parseInt(process.env['E2E_REPEAT'] ?? '10', 10);
+const repeat = parseInt(process.env['E2E_REPEAT'] ?? '100', 10);
 
 export default defineConfig({
   testDir,
@@ -15,6 +15,7 @@ export default defineConfig({
   retries: process.env['CI'] ? 2 : 0,
   repeatEach: repeat,
   reporter: 'html',
+  workers: 5,
   use: {
     baseURL: 'http://localhost:4200',
     trace: 'on-first-retry',

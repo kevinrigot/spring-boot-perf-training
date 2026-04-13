@@ -1,5 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 
+const isEmployeesApiResponse = (url: string) => url.includes('localhost:8080/employees');
+
 export class EmployeesPage {
   readonly page: Page;
   readonly firstNameInput: Locator;
@@ -32,40 +34,52 @@ export class EmployeesPage {
   }
 
   async navigate() {
-    await this.page.goto('/employees');
-    await this.waitForData();
+    await Promise.all([
+      this.page.waitForResponse(
+        resp => isEmployeesApiResponse(resp.url()) && resp.status() === 200,
+        { timeout: 30000 },
+      ),
+      this.page.goto('/employees'),
+    ]);
   }
 
-  async waitForData() {
-    await expect(this.page.locator('.status-bar.loading')).toHaveCount(0, { timeout: 30000 });
+  private async clickAndWait() {
+    await Promise.all([
+      this.page.waitForResponse(
+        resp => isEmployeesApiResponse(resp.url()) && resp.status() === 200,
+        { timeout: 30000 },
+      ),
+      this.searchButton.click(),
+    ]);
   }
 
   async filterByFirstName(firstName: string) {
     await this.firstNameInput.fill(firstName);
-    await this.searchButton.click();
-    await this.waitForData();
+    await this.clickAndWait();
   }
 
   async filterByLastName(lastName: string) {
     await this.lastNameInput.fill(lastName);
-    await this.searchButton.click();
-    await this.waitForData();
+    await this.clickAndWait();
   }
 
   async filterByCompanyId(companyId: string) {
     await this.companyIdInput.fill(companyId);
-    await this.searchButton.click();
-    await this.waitForData();
+    await this.clickAndWait();
   }
 
   async submitSearch() {
-    await this.searchButton.click();
-    await this.waitForData();
+    await this.clickAndWait();
   }
 
   async reset() {
-    await this.resetButton.click();
-    await this.waitForData();
+    await Promise.all([
+      this.page.waitForResponse(
+        resp => isEmployeesApiResponse(resp.url()) && resp.status() === 200,
+        { timeout: 30000 },
+      ),
+      this.resetButton.click(),
+    ]);
   }
 
   async getTotalCount(): Promise<string> {
