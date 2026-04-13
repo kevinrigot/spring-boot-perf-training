@@ -3,6 +3,7 @@ package be.fgov.onerva.training.springbootperf.domain.department;
 import be.fgov.onerva.training.springbootperf.domain.company.Company;
 import be.fgov.onerva.training.springbootperf.domain.employee.Employee;
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +26,7 @@ public class Department {
     @JoinColumn(name = "chief_user_id", nullable = false, referencedColumnName = "user_id")
     private Employee chief;
 
+    @BatchSize(size = 20)
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = false)
     private Set<Employee> employees = new HashSet<>();
 
