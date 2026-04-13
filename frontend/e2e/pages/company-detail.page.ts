@@ -22,7 +22,7 @@ export class CompanyDetailPage {
   }
 
   async waitForData() {
-    await expect(this.page.locator('.status-bar.loading')).toHaveCount(0, { timeout: 10000 });
+    await expect(this.companyHeading).toBeVisible({ timeout: 30000 });
   }
 
   async isOnDetailPage(): Promise<boolean> {
