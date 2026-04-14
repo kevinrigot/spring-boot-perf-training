@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="External service" type="NodeJSConfigurationType" node-parameters="server.js" path-to-js-file="server.js" working-dir="$PROJECT_DIR$/mock-external-service">
+    <method v="2" />
+  </configuration>
+</component>

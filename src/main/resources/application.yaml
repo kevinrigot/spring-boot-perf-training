@@ -11,6 +11,31 @@ spring:
     #open-in-view: false
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        generate_statistics: true
+
+external:
+  employee-service:
+    url: http://localhost:3001
 
 server:
   port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, metrics
+  metrics:
+    tags:
+      application: spring-perf-training
+    enable:
+      hibernate: true
+      jvm: true
+      process: true
+      system: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
