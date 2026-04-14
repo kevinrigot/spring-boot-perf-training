@@ -18,8 +18,10 @@ public class ExternalEmployeeService {
 
     private final RestClient restClient;
 
-    public ExternalEmployeeService(@Value("${external.employee-service.url}") String baseUrl) {
-        this.restClient = RestClient.builder()
+    public ExternalEmployeeService(
+            RestClient.Builder restClientBuilder,
+            @Value("${external.employee-service.url}") String baseUrl) {
+        this.restClient = restClientBuilder
                 .baseUrl(baseUrl)
                 .build();
     }
