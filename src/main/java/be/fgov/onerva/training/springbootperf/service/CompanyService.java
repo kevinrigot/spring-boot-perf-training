@@ -18,7 +18,7 @@ public class CompanyService {
     public CompanyService(CompanyRepository repo) { this.repo = repo; }
 
     @Transactional
-    public Page<Company> search(Long id, String name, int page, int size) {
+    public Page<Company> search(Long id, String name, int page, int size, boolean withDetails) {
         Specification<Company> spec = Specification.allOf();
         if (id != null) {
             spec = spec.and((root, q, cb) -> cb.equal(root.get("id"), id));
@@ -30,8 +30,9 @@ public class CompanyService {
 
         Page<Company> companiesIds = repo.findAll(spec, PageRequest.of(page, size, Sort.by("id")));
         List<Company> companies = repo.findAllByIdIn(companiesIds.getContent().stream().map(Company::getId).toList());
-        companies.stream().flatMap(c -> c.getDepartments().stream()).forEach(d -> d.getEmployees().size());
-
+        if(withDetails) {
+            companies.stream().flatMap(c -> c.getDepartments().stream()).forEach(d -> d.getEmployees().size());
+        }
         return new PageImpl<>(companies, companiesIds.getPageable(), companiesIds.getTotalElements());
     }
 }

@@ -38,7 +38,7 @@ public class SearchController implements CompaniesApi, EmployeesApi {
 
     @Override
     public ResponseEntity<PageCompanyResponse> searchCompanies(Long id, String name, Integer page, Integer size) {
-        Page<Company> p = companyService.search(id, name, nvl(page), nvlSize(size));
+        Page<Company> p = companyService.search(id, name, nvl(page), nvlSize(size), false);
         PageCompanyResponse resp = new PageCompanyResponse()
                 .items(p.get().map(companyMapper::toApi).toList())
                 .page(toMeta(p));
@@ -47,7 +47,7 @@ public class SearchController implements CompaniesApi, EmployeesApi {
 
     @Override
     public ResponseEntity<PageCompanyDetailsResponse> searchCompaniesDetails(Long id, String name, Integer page, Integer size) {
-        Page<Company> p = companyService.search(id, name, nvl(page), nvlSize(size));
+        Page<Company> p = companyService.search(id, name, nvl(page), nvlSize(size), true);
         PageCompanyDetailsResponse resp = new PageCompanyDetailsResponse()
                 .items(p.get().map(companyMapper::toApiDetails).toList())
                 .page(toMeta(p));
