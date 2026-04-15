@@ -28,13 +28,12 @@ public class Employee {
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "employee_trainings",
         joinColumns = @JoinColumn(name = "employee_id"),
         inverseJoinColumns = @JoinColumn(name = "training_id")
     )
-    @BatchSize(size = 20)
     private Set<Training> trainings = new HashSet<>();
 
     public Long getId() { return id; }

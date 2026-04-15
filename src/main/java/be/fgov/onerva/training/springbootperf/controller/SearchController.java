@@ -4,6 +4,7 @@ import be.fgov.onerva.training.springbootperf.api.CompaniesApi;
 import be.fgov.onerva.training.springbootperf.api.EmployeesApi;
 import be.fgov.onerva.training.springbootperf.domain.company.Company;
 import be.fgov.onerva.training.springbootperf.domain.employee.Employee;
+import be.fgov.onerva.training.springbootperf.domain.training.Training;
 import be.fgov.onerva.training.springbootperf.mapper.CompanyMapper;
 import be.fgov.onerva.training.springbootperf.model.PageCompanyDetailsResponse;
 import be.fgov.onerva.training.springbootperf.model.PageCompanyResponse;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,6 +62,7 @@ public class SearchController implements CompaniesApi, EmployeesApi {
         Page<Employee> p = employeeService.search(id, firstName, lastName, departmentId, companyId, nvl(page), nvlSize(size));
         PageEmployeeResponse resp = new PageEmployeeResponse()
                 .items(p.get()
+                        .peek(e -> e.getTrainings().size())
                         .map(e -> externalEmployeeService.getEmployeeByUserId(e.getUserId()))
                 .toList())
                 .page(toMeta(p));
