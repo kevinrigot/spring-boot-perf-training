@@ -26,6 +26,7 @@ public class ExternalEmployeeService {
                 .build();
     }
 
+    @Cacheable(value = "employeesuserId", unless = "T(org.springframework.util.ObjectUtils).isEmpty(#result)")
     public Employee getEmployeeByUserId(String userId) {
         log.info("getEmployeeByUserId from external service for {}", userId);
         return restClient.get()
