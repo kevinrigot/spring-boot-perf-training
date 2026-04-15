@@ -1,0 +1,31 @@
+pg_query_stats:
+  query: |
+    SELECT
+      queryid::text AS queryid,
+      LEFT(query, 100) AS query,
+      calls,
+      total_exec_time / 1000.0 AS exec_seconds,
+      mean_exec_time / 1000.0 AS mean_exec_seconds
+    FROM pg_stat_statements
+    WHERE query NOT LIKE '%pg_stat_statements%'
+      AND query NOT LIKE 'BEGIN'
+      AND query NOT LIKE 'COMMIT'
+    ORDER BY total_exec_time DESC
+    LIMIT 20
+  master: true
+  metrics:
+    - queryid:
+        usage: "LABEL"
+        description: "Query identifier"
+    - query:
+        usage: "LABEL"
+        description: "Query text (first 100 chars)"
+    - calls:
+        usage: "COUNTER"
+        description: "Number of times the statement was executed"
+    - exec_seconds:
+        usage: "COUNTER"
+        description: "Total execution time in seconds"
+    - mean_exec_seconds:
+        usage: "GAUGE"
+        description: "Mean execution time in seconds"

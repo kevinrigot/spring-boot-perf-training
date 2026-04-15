@@ -37,8 +37,26 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: strong-password
       POSTGRES_DB: myapp_db
+    command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - monitoring
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: postgres_exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:strong-password@db:5432/myapp_db?sslmode=disable"
+    command:
+      - "--extend.query-path=/queries.yaml"
+    volumes:
+      - ./postgres-exporter/queries.yaml:/queries.yaml
+    ports:
+      - "9187:9187"
+    depends_on:
+      - db
     networks:
       - monitoring
 
