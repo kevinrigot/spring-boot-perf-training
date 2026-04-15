@@ -1,4 +1,4 @@
-TRUNCATE TABLE companies, departments, employees CASCADE;
+TRUNCATE TABLE companies, departments, employees, trainings CASCADE;
 
 -- Insert 100 companies
 INSERT INTO companies(name, address, vat)
@@ -83,3 +83,38 @@ UPDATE departments d
 SET chief_user_id = (
     SELECT MIN(e.user_id) FROM employees e WHERE e.department_id = d.id
 );
+
+-- Insert training catalog (20 trainings across 4 categories)
+INSERT INTO trainings (name, description, category, duration_days)
+VALUES
+    -- Technical
+    ('Java Fundamentals',            'Core Java programming: OOP, collections, concurrency and the JVM', 'Technical', 3),
+    ('Spring Boot Essentials',       'Building production-ready microservices with Spring Boot 3',        'Technical', 4),
+    ('Docker & Kubernetes',          'Containerisation and orchestration for cloud-native applications',  'Technical', 3),
+    ('AWS Cloud Practitioner',       'Foundational AWS services, security, and pricing models',           'Technical', 2),
+    ('SQL Performance Tuning',       'Query optimisation, indexing strategies and execution plans',       'Technical', 2),
+    ('Clean Code & Refactoring',     'Writing maintainable, readable code and applying SOLID principles', 'Technical', 2),
+    ('CI/CD with GitHub Actions',    'Automated build, test and deploy pipelines using GitHub Actions',   'Technical', 1),
+    ('API Design with OpenAPI',      'Designing RESTful APIs using the OpenAPI 3.1 specification',        'Technical', 1),
+    -- Soft Skills
+    ('Effective Communication',      'Written and verbal communication skills for professional contexts', 'Soft Skills', 1),
+    ('Leadership Fundamentals',      'Core leadership principles: delegation, feedback and motivation',   'Soft Skills', 2),
+    ('Conflict Resolution',          'Techniques for de-escalating and resolving workplace conflict',     'Soft Skills', 1),
+    ('Time Management',              'Prioritisation frameworks: Eisenhower matrix, time-blocking',       'Soft Skills', 1),
+    ('Presentation Skills',          'Structuring and delivering impactful presentations',                'Soft Skills', 1),
+    ('Agile & Scrum Practitioner',   'Scrum ceremonies, roles and artefacts for agile delivery teams',   'Soft Skills', 2),
+    -- Compliance
+    ('GDPR & Data Privacy',          'EU data protection regulation: obligations, rights and breaches',   'Compliance', 1),
+    ('Cyber Security Awareness',     'Phishing, social engineering and secure password practices',        'Compliance', 1),
+    ('Code of Conduct',              'Company values, ethics policy and reporting obligations',            'Compliance', 1),
+    ('Anti-Bribery & Corruption',    'Legal framework and practical guidance on anti-corruption',         'Compliance', 1),
+    -- Management
+    ('Project Management Basics',    'Project initiation, planning, execution and closure',               'Management', 3),
+    ('Budget & Cost Management',     'Financial planning, forecasting and cost-control techniques',       'Management', 2);
+
+-- Assign ~3 trainings per employee deterministically using id arithmetic
+INSERT INTO employee_trainings (employee_id, training_id)
+SELECT e.id, t.id
+FROM employees e
+CROSS JOIN trainings t
+WHERE MOD(e.id * 3 + t.id, 20) < 3;
