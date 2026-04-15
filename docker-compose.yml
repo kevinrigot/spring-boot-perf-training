@@ -8,6 +8,8 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - monitoring
 
   grafana:
     image: grafana/grafana:latest
@@ -22,6 +24,28 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - prometheus
+    networks:
+      - monitoring
+
+  db:
+    image: postgres:16-alpine
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: strong-password
+      POSTGRES_DB: myapp_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
 
 volumes:
+  pgdata:
   grafana-data:
