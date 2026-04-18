@@ -49,6 +49,7 @@ services:
     container_name: postgres_exporter
     environment:
       DATA_SOURCE_NAME: "postgresql://postgres:strong-password@db:5432/myapp_db?sslmode=disable"
+      PG_EXPORTER_AUTO_DISCOVER_DATABASES: "true"
     command:
       - "--extend.query-path=/queries.yaml"
     volumes:
