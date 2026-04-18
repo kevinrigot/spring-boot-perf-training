@@ -2,11 +2,13 @@ pg_query_stats:
   query: |
     SELECT
       queryid::text AS queryid,
+      d.datname AS datname,
       LEFT(query, 100) AS query,
       calls,
       total_exec_time / 1000.0 AS exec_seconds,
       mean_exec_time / 1000.0 AS mean_exec_seconds
-    FROM pg_stat_statements
+    FROM pg_stat_statements s
+    JOIN pg_database d ON d.oid = s.dbid
     WHERE query NOT LIKE '%pg_stat_statements%'
       AND query NOT LIKE 'BEGIN'
       AND query NOT LIKE 'COMMIT'
@@ -17,6 +19,9 @@ pg_query_stats:
     - queryid:
         usage: "LABEL"
         description: "Query identifier"
+    - datname:
+        usage: "LABEL"
+        description: "Database name"
     - query:
         usage: "LABEL"
         description: "Query text (first 100 chars)"
